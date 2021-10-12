@@ -22,7 +22,7 @@ $ cp .env.example .env
 Start the application.
 
 ```bash
-$ npm build
+$ npm install
 
 $ npm start # For production
 
