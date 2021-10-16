@@ -4,7 +4,7 @@ services:
   api:
     image: "node:16-alpine"
     env_file: '.env.docker'
-    container_name: "starter-api"
+    container_name: "cv-api"
     volumes:
       - "./:/source"
     working_dir: /source
