@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 
-import logger from '../utils/logger';
-import APIResponseInterface from '../domain/responses/APIResponse';
+import logger from '../../utils/logger';
+import { APIResponseInterface } from '../responses/APIResponse';
 
 /**
  * Build error response for validation errors.
@@ -48,9 +48,9 @@ function buildError(err: any): APIResponseInterface {
  * Generic error response middleware for internal server errors.
  *
  * @param  {any} err
- * @param  {Request} req
+ * @param _
  * @param  {Response} res
- * @param  {NextFunction} next
+ * @param __
  * @returns void
  */
 export default function genericErrorHandler(
@@ -59,7 +59,7 @@ export default function genericErrorHandler(
   _: Request,
   res: Response,
   // TODO: Remove this.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
   __: NextFunction
 ): void {
   const error = buildError(err);

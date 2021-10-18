@@ -3,10 +3,10 @@ import helmet from 'helmet';
 import express from 'express';
 
 import routes from './routes';
-import logHandler from './middlewares/logHandler';
-import notFoundHandler from './middlewares/notFoundHandler';
-import transactionHandler from './middlewares/transactionHandler';
-import genericErrorHandler from './middlewares/genericErrorHandler';
+import logHandler from './resources/middlewares/logHandler';
+import notFoundHandler from './resources/middlewares/notFoundHandler';
+import transactionHandler from './resources/middlewares/transactionHandler';
+import genericErrorHandler from './resources/middlewares/genericErrorHandler';
 
 const app: express.Application = express();
 

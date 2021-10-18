@@ -1,5 +1,5 @@
-import config from '../config/config';
-import logger from '../utils/logger';
+import config from '../../config/config';
+import logger from '../../utils/logger';
 
 const { errors } = config;
 
@@ -9,6 +9,7 @@ const { errors } = config;
  * @param  {NodeJS.ErrnoException} err
  * @returns <void>
  */
+// eslint-disable-next-line no-undef
 export default function nodeErrorHandler(err: NodeJS.ErrnoException): void {
   switch (err.code) {
     case 'EACCES':

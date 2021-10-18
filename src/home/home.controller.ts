@@ -8,7 +8,7 @@ const { name, version } = config;
 /**
  * Handle / GET request, responds API information.
  *
- * @param {Request} req
+ * @param _
  * @param {Response} res
  * @returns {void}
  */
