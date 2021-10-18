@@ -25,5 +25,8 @@ export default {
     maxSize: process.env.LOGGING_MAX_SIZE || '20m',
     maxFiles: process.env.LOGGING_MAX_FILES || '7d',
     datePattern: process.env.LOGGING_DATE_PATTERN || 'YYYY-MM-DD'
+  },
+  elastic: {
+    url: process.env.ELASTIC_URL || 'http://localhost:9200'
   }
 };
