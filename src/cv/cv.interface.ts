@@ -8,3 +8,5 @@ export interface IQueryCV {
 }
 
 export const CV_INDEX = 'cvs';
+
+export const CV_TYPE = 'cv';

@@ -1,5 +1,10 @@
 import { Client } from '@elastic/elasticsearch';
-import { IIndexMapping, IQuery } from './elastic.interface';
+import {
+  IIndexMapping,
+  IInsertDocumentHeader,
+  IQuery,
+  ISearchDocumentHeader
+} from './elastic.interface';
 import { client } from './elastic.config';
 
 class ElasticService {
@@ -30,10 +35,10 @@ class ElasticService {
     });
   }
 
-  public async searchByKeyword(index: string, query: IQuery) {
+  public async searchByKeyword(header: ISearchDocumentHeader, query: IQuery) {
     return this.client.search(
       {
-        index,
+        ...header,
         body: {
           query: {
             match_all: query
@@ -47,10 +52,9 @@ class ElasticService {
     );
   }
 
-  public async insert<T>(indexName: string, id: string, document: T) {
-    return this.client.create({
-      id,
-      index: indexName,
+  public async insert<T>(header: IInsertDocumentHeader, document: T) {
+    return this.client.index({
+      ...header,
       body: document
     });
   }

@@ -58,7 +58,7 @@ export async function update_index(req: Request, res: Response): Promise<void> {
 
   if (!indexName) {
     res.status(StatusCodes.BAD_REQUEST).json({
-      message: 'No index or mapping given'
+      message: 'No index given'
     });
   }
 

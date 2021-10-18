@@ -14,3 +14,14 @@ export interface IIndexMapping {
 export interface IQuery {
   [key: string]: any;
 }
+
+export interface IInsertDocumentHeader {
+  id: string;
+  index: string;
+  type: string;
+}
+
+export interface ISearchDocumentHeader {
+  index: string;
+  type: string;
+}
