@@ -47,10 +47,10 @@ class ElasticService {
     );
   }
 
-  public async insert<T>(index: string, document: T) {
+  public async insert<T>(indexName: string, id: string, document: T) {
     return this.client.create({
-      id: '1',
-      index,
+      id,
+      index: indexName,
       body: document
     });
   }

@@ -12,5 +12,5 @@ export interface IIndexMapping {
 }
 
 export interface IQuery {
-  [key: string]: string;
+  [key: string]: any;
 }
