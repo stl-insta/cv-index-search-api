@@ -1,7 +1,7 @@
 import app from './app';
 import logger from './utils/logger';
 import config from './config/config';
-import nodeErrorHandler from './middlewares/nodeErrorHandler';
+import nodeErrorHandler from './resources/middlewares/nodeErrorHandler';
 
 const { port } = config;
 

@@ -8,7 +8,9 @@
   ],
   "env": {
     "node": true,
-    "commonjs": true
+    "commonjs": true,
+    "jest": true,
+    "mocha": true
   },
   "parserOptions": {
     "ecmaVersion": 2018,
