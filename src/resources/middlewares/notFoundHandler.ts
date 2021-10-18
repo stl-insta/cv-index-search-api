@@ -4,16 +4,15 @@ import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 /**
  * Error response middleware for 404 not found.
  *
- * @param  {Request} req
+ * @param _
  * @param  {Response} res
- * @param  {NextFunction} next
+ * @param __
  * @returns <void>
  */
 export default function notFoundError(
   _: Request,
   res: Response,
-  // TODO: Remove this
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line no-unused-vars
   __: NextFunction
 ): void {
   res.status(StatusCodes.NOT_FOUND).json({
