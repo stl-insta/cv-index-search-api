@@ -1,18 +1,12 @@
+import fs from 'fs';
+import PDFParser from 'pdf2json';
+import docx4js from 'docx4js';
+import xml2js from 'xml2js';
+
 import app from './app';
 import logger from './utils/logger';
 import config from './config/config';
-<<<<<<< HEAD
 import nodeErrorHandler from './resources/middlewares/nodeErrorHandler';
-=======
-import nodeErrorHandler from './middlewares/nodeErrorHandler';
-import fs from 'fs';
-import PDFParser from 'pdf2json';
-<<<<<<< HEAD
->>>>>>> 58378eb... feat: 🎸 add pdf to json feature
-=======
-import docx4js from 'docx4js';
-import xml2js from 'xml2js';
->>>>>>> b713d16... feat: 🎸 add docx parsing to xml to json
 
 const { port } = config;
 
