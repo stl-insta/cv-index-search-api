@@ -4,9 +4,7 @@ export interface ICV {
 }
 
 export interface IQueryCV {
-  content: string[];
+  [content: string]: string[];
 }
 
 export const CV_INDEX = 'cvs';
-
-export const CV_TYPE = 'cv';

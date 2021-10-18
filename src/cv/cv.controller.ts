@@ -5,7 +5,7 @@ import { CV } from './cv.class';
 import * as url from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import { elasticService } from '../elastic/elastic.service';
-import { IQueryCV, ICV, CV_INDEX, CV_TYPE } from './cv.interface';
+import { IQueryCV, ICV, CV_INDEX } from './cv.interface';
 import {
   IInsertDocumentHeader,
   ISearchDocumentHeader
@@ -43,22 +43,15 @@ export async function search(req: Request, res: Response): Promise<void> {
   }
 
   const query: IQueryCV = {
-    content: []
+    content: (<string>keywords).split(',')
   };
 
-  if (typeof keywords == 'string') {
-    query.content = [keywords];
-  } else {
-    query.content = <string[]>keywords;
-  }
-
   const header: ISearchDocumentHeader = {
-    index: CV_INDEX,
-    type: CV_TYPE
+    index: CV_INDEX
   };
 
   try {
-    const result = await elasticService.searchByKeyword(header, query);
+    const result = await elasticService.searchByKeywords(header, query);
     res.status(StatusCodes.OK).json({
       data: result
     });

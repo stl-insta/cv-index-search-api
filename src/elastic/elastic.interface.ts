@@ -12,7 +12,7 @@ export interface IIndexMapping {
 }
 
 export interface IQuery {
-  [key: string]: any;
+  [key: string]: string[];
 }
 
 export interface IInsertDocumentHeader {
@@ -23,5 +23,4 @@ export interface IInsertDocumentHeader {
 
 export interface ISearchDocumentHeader {
   index: string;
-  type: string;
 }

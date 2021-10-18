@@ -35,15 +35,30 @@ class ElasticService {
     });
   }
 
-  public async searchByKeyword(header: ISearchDocumentHeader, query: IQuery) {
+  public async searchByKeywords(header: ISearchDocumentHeader, _query: IQuery) {
+    const buildQuery = (query: IQuery) => {
+      const should: any[] = [];
+      Object.keys(query).forEach((key: string) => {
+        query[key].forEach((value: string) => {
+          should.push({
+            match: {
+              [key]: value
+            }
+          });
+        });
+      });
+      return {
+        query: {
+          bool: {
+            should
+          }
+        }
+      };
+    };
     return this.client.search(
       {
         ...header,
-        body: {
-          query: {
-            match_all: query
-          }
-        }
+        body: buildQuery(_query)
       },
       {
         ignore: [404],
