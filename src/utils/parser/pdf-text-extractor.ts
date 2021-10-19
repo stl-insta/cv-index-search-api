@@ -2,6 +2,8 @@ import { fromPath } from 'pdf2pic';
 import { Options } from 'pdf2pic/dist/types/options';
 import { WriteImageResponse } from 'pdf2pic/dist/types/writeImageResponse';
 import * as tesseract from 'node-tesseract-ocr';
+import * as fs from 'fs';
+import logger from '../logger';
 
 export interface IPdfTextExtractor {
   // eslint-disable-next-line no-unused-vars
@@ -29,6 +31,7 @@ export class PdfTextExtractor implements IPdfTextExtractor {
   }
 
   public async extractText(): Promise<string> {
+    /** Convert pdf to img **/
     const images = await PdfTextExtractor.pdfToImg(
       this.filePath,
       this.savePath,
@@ -37,6 +40,8 @@ export class PdfTextExtractor implements IPdfTextExtractor {
     if (!images) {
       return Promise.reject('Could not convert PDF to IMG');
     }
+
+    /** Extract text from images **/
     const extractors: Promise<string>[] = [];
     images.forEach((path: string) =>
       extractors.push(PdfTextExtractor.imgToText(path))
@@ -45,7 +50,12 @@ export class PdfTextExtractor implements IPdfTextExtractor {
     if (!results) {
       return Promise.reject('Could not extract text from IMG');
     }
-    return Promise.resolve(results.join());
+    const text = results.join();
+
+    /** Remove created images **/
+    images.forEach((path: string) => PdfTextExtractor.clearArtifacts(path));
+
+    return text;
   }
 
   private static async imgToText(path: string): Promise<string> {
@@ -80,5 +90,18 @@ export class PdfTextExtractor implements IPdfTextExtractor {
       return Promise.reject('Could not convert PDF to IMG');
     }
     return Promise.resolve(<string[]>img.map((i) => i.path));
+  }
+
+  private static clearArtifacts(filePath: string): boolean {
+    try {
+      fs.unlinkSync(filePath);
+      return true;
+    } catch (err) {
+      logger.log({
+        level: 'error',
+        message: JSON.stringify(err)
+      });
+      return false;
+    }
   }
 }
