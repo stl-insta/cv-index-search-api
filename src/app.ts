@@ -1,6 +1,7 @@
 import cors from 'cors';
 import helmet from 'helmet';
 import express from 'express';
+import fileUpload from 'express-fileupload';
 
 import routes from './routes';
 import logHandler from './resources/middlewares/logHandler';
@@ -9,6 +10,12 @@ import transactionHandler from './resources/middlewares/transactionHandler';
 import genericErrorHandler from './resources/middlewares/genericErrorHandler';
 
 const app: express.Application = express();
+
+app.use(
+  fileUpload({
+    createParentPath: true
+  })
+);
 
 app.use(cors());
 app.use(helmet());
@@ -21,5 +28,8 @@ app.use('/', routes);
 
 app.use(genericErrorHandler);
 app.use(notFoundHandler);
+
+// make the uploaded files publicly accessible from anywhere by making directory static
+app.use(express.static('assets'));
 
 export default app;

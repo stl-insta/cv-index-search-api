@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { UploadedFile } from 'express-fileupload';
 import { CV } from './cv.class';
 
 import * as url from 'url';
@@ -108,3 +109,47 @@ export async function search(req: Request, res: Response): Promise<void> {
     });
   }
 }
+
+export const create = async (req: Request, res: Response): Promise<void> => {
+  try {
+    if (!req.files) {
+      res.send({
+        status: false,
+        message: 'No file uploaded'
+      });
+    } else {
+      let data: { name: string; mimetype: string; mv: any }[] = [];
+      let cvs = req.files.cvs as UploadedFile[];
+      if (!Array.isArray(cvs)) {
+        cvs = [cvs];
+      }
+      cvs.forEach((cv) => {
+        if (cv.mimetype == 'application/pdf') {
+          cv.mv('./assets/cv/pdf/' + cv.name);
+        } else if (
+          cv.mimetype ==
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+          cv.mimetype == 'application/msword'
+        ) {
+          cv.mv('./assets/cv/docx/' + cv.name);
+        }
+        data.push({
+          name: cv.name,
+          mimetype: cv.mimetype,
+          mv: cv.mv
+        });
+      });
+
+      res.status(StatusCodes.OK).json({
+        message: 'Files are uploaded',
+        data: data
+      });
+    }
+    // const cv = new CV();
+    // Object.assign(cv, req.body);
+  } catch (e: any) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      message: e.message
+    });
+  }
+};
