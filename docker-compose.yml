@@ -2,7 +2,9 @@ version: "3"
 
 services:
   api:
-    image: "node:16-alpine"
+    build:
+      context: .
+      dockerfile: Dockerfile.api
     env_file: '.env.docker'
     container_name: "api"
     volumes:
