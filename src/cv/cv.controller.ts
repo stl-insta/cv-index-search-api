@@ -21,10 +21,15 @@ export async function insert(req: Request, res: Response): Promise<void> {
     index: CV_INDEX
   };
   try {
-    const result = await elasticService.insert<ICV>(header, cv);
+    const data = await elasticService.insert<ICV>(header, cv);
+    const buildResponse = (result: any) => {
+      return {
+        id: result?.body?._id
+      };
+    };
     res.status(StatusCodes.OK).json({
       message: 'CV inserted successfully',
-      data: result
+      data: buildResponse(data)
     });
   } catch (e) {
     res.status(StatusCodes.BAD_REQUEST).json({
@@ -47,10 +52,15 @@ export async function remove(req: Request, res: Response): Promise<void> {
     index: CV_INDEX
   };
   try {
-    const result = await elasticService.delete(header);
+    const data = await elasticService.delete(header);
+    const buildResponse = (result: any) => {
+      return {
+        id: result?.body?._id
+      };
+    };
     res.status(StatusCodes.OK).json({
       message: 'CV deleted successfully',
-      data: result
+      data: buildResponse(data)
     });
   } catch (e) {
     res.status(StatusCodes.BAD_REQUEST).json({
