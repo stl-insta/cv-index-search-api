@@ -1,51 +1,88 @@
-import { Client, ClientOptions } from '@elastic/elasticsearch';
-import config from '../config/config';
+import { Client } from '@elastic/elasticsearch';
+import {
+  IDeleteDocumentHeader,
+  IIndexMapping,
+  IInsertDocumentHeader,
+  IQuery,
+  ISearchDocumentHeader
+} from './elastic.interface';
+import { client } from './elastic.config';
 
 class ElasticService {
   public client!: Client;
 
+  public setClient(_client: Client) {
+    this.client = _client;
+  }
+
   public async createIndex(indexName: string) {
-    const res = await this.client.indices.exists({
-      index: indexName
-    });
-
-    if (res) return;
-
     return this.client.indices.create({
       index: indexName
     });
   }
 
-  public setClient(client: Client) {
-    this.client = client;
+  public async deleteIndex(indexName: string) {
+    return this.client.indices.delete({
+      index: indexName
+    });
   }
 
-  public async search(options: any) {
-    return this.client.search(options);
+  public async updateIndex(indexName: string, mapping: IIndexMapping) {
+    return this.client.indices.putMapping({
+      index: indexName,
+      body: {
+        properties: mapping
+      }
+    });
   }
 
-  public async insert(index: string, document: Record<string, unknown>) {
-    return this.client.create({
-      id: '1',
-      index,
+  public async searchByKeywords(header: ISearchDocumentHeader, _query: IQuery) {
+    const buildQuery = (query: IQuery) => {
+      const should: any[] = [];
+      Object.keys(query).forEach((key: string) => {
+        query[key].forEach((value: string) => {
+          should.push({
+            match: {
+              [key]: value
+            }
+          });
+        });
+      });
+      return {
+        query: {
+          bool: {
+            should
+          }
+        }
+      };
+    };
+    return this.client.search(
+      {
+        ...header,
+        body: buildQuery(_query)
+      },
+      {
+        ignore: [404],
+        maxRetries: 3
+      }
+    );
+  }
+
+  public async insert<T>(header: IInsertDocumentHeader, document: T) {
+    return this.client.index({
+      ...header,
       body: document
+    });
+  }
+
+  public async delete(header: IDeleteDocumentHeader) {
+    return this.client.delete({
+      ...header
     });
   }
 }
 
-const options: ClientOptions = {
-  node: config.elastic.url
-};
-
 const elasticService = new ElasticService();
 
-let client: Client;
-
-try {
-  client = new Client(options);
-  elasticService.setClient(client);
-} catch (e) {
-  console.error('Cannot connect to client', e);
-}
-
+elasticService.setClient(client);
 export { elasticService };
