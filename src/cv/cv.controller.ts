@@ -12,6 +12,8 @@ import {
   IInsertDocumentHeader,
   ISearchDocumentHeader
 } from '../elastic/elastic.interface';
+import wordParser from '../utils/parser/docx';
+import pdfParser from '../utils/parser/pdf';
 
 export async function insert(req: Request, res: Response): Promise<void> {
   const cv = CV.fromRequest(req);
@@ -138,6 +140,25 @@ export const create = async (req: Request, res: Response): Promise<void> => {
           mimetype: cv.mimetype,
           mv: cv.mv
         });
+        (async function () {
+          const fileName = cv.name.replace(/\.[^/.]+$/, '');
+          if (cv.mimetype == 'application/pdf') {
+            pdfParser(
+              `./assets/cv/pdf/${fileName}.pdf`,
+              `./assets/json/pdf/${fileName}.json`
+            );
+          } else if (
+            cv.mimetype ==
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+            cv.mimetype == 'application/msword'
+          ) {
+            wordParser(
+              `./assets/cv/docx/${fileName}.docx`,
+              `./assets/cv/xml/${fileName}.xml`,
+              `./assets/json/docx/${fileName}.json`
+            );
+          }
+        })();
       });
 
       res.status(StatusCodes.OK).json({
