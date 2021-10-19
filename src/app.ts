@@ -24,12 +24,13 @@ app.use(logHandler);
 app.use(express.json({ limit: '300kb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// make the uploaded files publicly accessible from anywhere by making directory static
+// e.g. http://localhost:8000/cv/pdf/wlin.pdf
+app.use(express.static('assets'));
+
 app.use('/', routes);
 
 app.use(genericErrorHandler);
 app.use(notFoundHandler);
-
-// make the uploaded files publicly accessible from anywhere by making directory static
-app.use(express.static('assets'));
 
 export default app;
