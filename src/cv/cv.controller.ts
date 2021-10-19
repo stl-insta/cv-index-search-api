@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { elasticService } from '../elastic/elastic.service';
 import { IQueryCV, ICV, CV_INDEX } from './cv.interface';
 import {
+  IDeleteDocumentHeader,
   IInsertDocumentHeader,
   ISearchDocumentHeader
 } from '../elastic/elastic.interface';
@@ -28,6 +29,32 @@ export async function insert(req: Request, res: Response): Promise<void> {
   } catch (e) {
     res.status(StatusCodes.BAD_REQUEST).json({
       message: `Could not insert CV`,
+      data: e
+    });
+  }
+}
+
+export async function remove(req: Request, res: Response): Promise<void> {
+  const { id } = url.parse(req.url, true).query;
+
+  if (!id) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      message: `No id given`
+    });
+  }
+  const header: IDeleteDocumentHeader = {
+    id: id as string,
+    index: CV_INDEX
+  };
+  try {
+    const result = await elasticService.delete(header);
+    res.status(StatusCodes.OK).json({
+      message: 'CV deleted successfully',
+      data: result
+    });
+  } catch (e) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      message: `Could not delete CV`,
       data: e
     });
   }

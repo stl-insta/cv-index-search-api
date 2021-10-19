@@ -1,5 +1,6 @@
 import { Client } from '@elastic/elasticsearch';
 import {
+  IDeleteDocumentHeader,
   IIndexMapping,
   IInsertDocumentHeader,
   IQuery,
@@ -71,6 +72,12 @@ class ElasticService {
     return this.client.index({
       ...header,
       body: document
+    });
+  }
+
+  public async delete(header: IDeleteDocumentHeader) {
+    return this.client.delete({
+      ...header
     });
   }
 }

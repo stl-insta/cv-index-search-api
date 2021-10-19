@@ -24,3 +24,8 @@ export interface IInsertDocumentHeader {
 export interface ISearchDocumentHeader {
   index: string;
 }
+
+export interface IDeleteDocumentHeader {
+  id: string;
+  index: string;
+}
