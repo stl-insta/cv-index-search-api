@@ -52,8 +52,18 @@ export async function search(req: Request, res: Response): Promise<void> {
 
   try {
     const result = await elasticService.searchByKeywords(header, query);
+    const buildResponse = (response: any): ICV[] => {
+      return (<any[]>response?.body?.hits?.hits).map(
+        (hit: Record<string, any>) => {
+          return {
+            id: hit._id,
+            ...hit._source
+          };
+        }
+      );
+    };
     res.status(StatusCodes.OK).json({
-      data: result
+      data: buildResponse(result)
     });
   } catch (e: any) {
     res.status(StatusCodes.BAD_REQUEST).json({
