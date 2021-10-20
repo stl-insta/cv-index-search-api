@@ -75,3 +75,5 @@ volumes
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+
+.metals/

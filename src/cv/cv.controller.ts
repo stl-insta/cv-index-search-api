@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { UploadedFile } from 'express-fileupload';
 import { CV } from './cv.class';
 
 import * as url from 'url';
@@ -11,6 +12,8 @@ import {
   IInsertDocumentHeader,
   ISearchDocumentHeader
 } from '../elastic/elastic.interface';
+import wordParser from '../utils/parser/docx';
+import pdfParser from '../utils/parser/pdf';
 
 export async function insert(req: Request, res: Response): Promise<void> {
   const cv = CV.fromRequest(req);
@@ -108,3 +111,55 @@ export async function search(req: Request, res: Response): Promise<void> {
     });
   }
 }
+
+export const create = async (req: Request, res: Response): Promise<void> => {
+  try {
+    if (!req.files) {
+      res.send({
+        status: false,
+        message: 'No file uploaded'
+      });
+    } else {
+      let data: { name: string; mimetype: string; mv: any }[] = [];
+      let cvs = req.files.cvs as UploadedFile[];
+      if (!Array.isArray(cvs)) {
+        cvs = [cvs];
+      }
+      cvs.forEach((cv) => {
+        const fileName = cv.name.replace(/\.[^/.]+$/, '');
+        switch (cv.mimetype) {
+          case 'application/pdf':
+            cv.mv('./assets/cv/pdf/' + cv.name);
+            pdfParser(
+              `./assets/cv/pdf/${fileName}.pdf`,
+              `./assets/json/pdf/${fileName}.json`
+            );
+            break;
+          case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+            'application/msword':
+            cv.mv('./assets/cv/docx/' + cv.name);
+            wordParser(
+              `./assets/cv/docx/${fileName}.docx`,
+              `./assets/cv/xml/${fileName}.xml`,
+              `./assets/json/docx/${fileName}.json`
+            );
+            break;
+        }
+        data.push({
+          name: cv.name,
+          mimetype: cv.mimetype,
+          mv: cv.mv
+        });
+      });
+
+      res.status(StatusCodes.OK).json({
+        message: 'Files are uploaded',
+        data: data
+      });
+    }
+  } catch (e: any) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      message: e.message
+    });
+  }
+};
