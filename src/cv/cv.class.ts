@@ -5,6 +5,10 @@ export class CV implements ICV {
   content!: string;
   url!: string;
 
+  setData(data: { content: string; url: string }) {
+    Object.assign(this, data);
+  }
+
   static fromRequest = (req: Request): CV => {
     let cv = new CV();
     Object.assign(cv, {

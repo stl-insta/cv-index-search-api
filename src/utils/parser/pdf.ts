@@ -1,17 +1,14 @@
-import fs from 'fs';
-import PDFParser from 'pdf2json';
+import PdfParser from 'pdf2json';
 
-const pdfParser = async (url: string, newFile: string): Promise<string> => {
-  const parser = new PDFParser();
-  parser.loadPDF(url);
+const pdfParser = async (path: string): Promise<string> => {
+  const parser = new PdfParser();
+  parser.loadPDF(path);
   return new Promise((resolve, reject) => {
     parser.on('pdfParser_dataError', (errData) => {
       reject(errData);
     });
     parser.on('pdfParser_dataReady', (pdfData) => {
-      const data = JSON.stringify(pdfData);
-      fs.writeFileSync(newFile, data);
-      resolve(data);
+      resolve(JSON.stringify(pdfData));
     });
   });
 };
