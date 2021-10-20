@@ -149,11 +149,18 @@ export const create = async (req: Request, res: Response): Promise<void> => {
             await cv.mv('./assets/cv/docx/' + cv.name);
             pathJson = `./assets/json/docx/${fileName}.json`;
             pathFile = `./assets/cv/docx/${fileName}.docx`;
-            await wordParser(
+            text = await wordParser(
               pathFile,
               `./assets/cv/xml/${fileName}.xml`,
               pathJson
             );
+            if (!text) {
+              return Promise.reject(new Error('Unable to parse docx'));
+            }
+            data.push({
+              url: pathFile.slice(2),
+              content: text
+            });
             break;
         }
       }

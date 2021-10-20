@@ -6,20 +6,23 @@ const wordParser = async (
   url: string,
   newXml: string,
   newFile: string
-): Promise<void> => {
+): Promise<string> => {
   const docx = await docx4js.load(url);
   fs.writeFileSync(newXml, docx.raw.files['word/document.xml'].asText());
   return xmlParser(newXml, newFile);
 };
 
-const xmlParser = async (newXml: string, newFile: string) => {
+const xmlParser = async (newXml: string, newFile: string): Promise<string> => {
   const xml = fs.readFileSync(newXml);
-  xml2js.parseString(xml, { mergeAttrs: true }, (err, result) => {
-    if (err) {
-      throw err;
-    }
-    const json = JSON.stringify(result, null, 4);
-    fs.writeFileSync(newFile, json);
+  return new Promise((resolve, reject) => {
+    xml2js.parseString(xml, { mergeAttrs: true }, (err, result) => {
+      if (err) {
+        reject(err);
+      }
+      const json = JSON.stringify(result, null, 4);
+      fs.writeFileSync(newFile, json);
+      resolve(json);
+    });
   });
 };
 
