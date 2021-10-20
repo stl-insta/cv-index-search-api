@@ -126,39 +126,30 @@ export const create = async (req: Request, res: Response): Promise<void> => {
         cvs = [cvs];
       }
       cvs.forEach((cv) => {
-        if (cv.mimetype == 'application/pdf') {
-          cv.mv('./assets/cv/pdf/' + cv.name);
-        } else if (
-          cv.mimetype ==
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-          cv.mimetype == 'application/msword'
-        ) {
-          cv.mv('./assets/cv/docx/' + cv.name);
+        const fileName = cv.name.replace(/\.[^/.]+$/, '');
+        switch (cv.mimetype) {
+          case 'application/pdf':
+            cv.mv('./assets/cv/pdf/' + cv.name);
+            pdfParser(
+              `./assets/cv/pdf/${fileName}.pdf`,
+              `./assets/json/pdf/${fileName}.json`
+            );
+            break;
+          case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+            'application/msword':
+            cv.mv('./assets/cv/docx/' + cv.name);
+            wordParser(
+              `./assets/cv/docx/${fileName}.docx`,
+              `./assets/cv/xml/${fileName}.xml`,
+              `./assets/json/docx/${fileName}.json`
+            );
+            break;
         }
         data.push({
           name: cv.name,
           mimetype: cv.mimetype,
           mv: cv.mv
         });
-        (async function () {
-          const fileName = cv.name.replace(/\.[^/.]+$/, '');
-          if (cv.mimetype == 'application/pdf') {
-            pdfParser(
-              `./assets/cv/pdf/${fileName}.pdf`,
-              `./assets/json/pdf/${fileName}.json`
-            );
-          } else if (
-            cv.mimetype ==
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-            cv.mimetype == 'application/msword'
-          ) {
-            wordParser(
-              `./assets/cv/docx/${fileName}.docx`,
-              `./assets/cv/xml/${fileName}.xml`,
-              `./assets/json/docx/${fileName}.json`
-            );
-          }
-        })();
       });
 
       res.status(StatusCodes.OK).json({
@@ -166,8 +157,6 @@ export const create = async (req: Request, res: Response): Promise<void> => {
         data: data
       });
     }
-    // const cv = new CV();
-    // Object.assign(cv, req.body);
   } catch (e: any) {
     res.status(StatusCodes.BAD_REQUEST).json({
       message: e.message
