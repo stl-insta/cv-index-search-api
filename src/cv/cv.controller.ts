@@ -120,37 +120,43 @@ export const create = async (req: Request, res: Response): Promise<void> => {
         message: 'No file uploaded'
       });
     } else {
-      let data: { name: string; mimetype: string; mv: any }[] = [];
+      const data: ICV[] = [];
       let cvs = req.files.cvs as UploadedFile[];
       if (!Array.isArray(cvs)) {
         cvs = [cvs];
       }
-      cvs.forEach((cv) => {
+      for (const cv of cvs) {
         const fileName = cv.name.replace(/\.[^/.]+$/, '');
+        let pathFile = '';
+        let pathJson = '';
+        let text: string;
         switch (cv.mimetype) {
           case 'application/pdf':
-            cv.mv('./assets/cv/pdf/' + cv.name);
-            pdfParser(
-              `./assets/cv/pdf/${fileName}.pdf`,
-              `./assets/json/pdf/${fileName}.json`
-            );
+            await cv.mv('./assets/cv/pdf/' + cv.name);
+            pathJson = `./assets/json/pdf/${fileName}.json`;
+            pathFile = `./assets/cv/pdf/${fileName}.pdf`;
+            text = await pdfParser(pathFile, pathJson);
+            if (!text) {
+              return Promise.reject(new Error('Unable to parse pdf'));
+            }
+            data.push({
+              url: pathFile.slice(2),
+              content: text
+            });
             break;
           case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
             'application/msword':
-            cv.mv('./assets/cv/docx/' + cv.name);
-            wordParser(
-              `./assets/cv/docx/${fileName}.docx`,
+            await cv.mv('./assets/cv/docx/' + cv.name);
+            pathJson = `./assets/json/docx/${fileName}.json`;
+            pathFile = `./assets/cv/docx/${fileName}.docx`;
+            await wordParser(
+              pathFile,
               `./assets/cv/xml/${fileName}.xml`,
-              `./assets/json/docx/${fileName}.json`
+              pathJson
             );
             break;
         }
-        data.push({
-          name: cv.name,
-          mimetype: cv.mimetype,
-          mv: cv.mv
-        });
-      });
+      }
 
       res.status(StatusCodes.OK).json({
         message: 'Files are uploaded',
