@@ -1,45 +1,35 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { UploadedFile } from 'express-fileupload';
-import { CV } from './cv.class';
-
 import * as url from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import { elasticService } from '../elastic/elastic.service';
-import { IQueryCV, ICV, CV_INDEX } from './cv.interface';
+import { CV_INDEX, ICV, IQueryCV } from './cv.interface';
 import {
   IDeleteDocumentHeader,
   IInsertDocumentHeader,
   ISearchDocumentHeader
 } from '../elastic/elastic.interface';
+
+import Error from '../resources/exceptions/Error';
+import { UploadedFile } from 'express-fileupload';
+import { CV } from './cv.class';
+import { FILETYPE } from '../resources/constants/filetype';
 import wordParser from '../utils/parser/docx';
 import pdfParser from '../utils/parser/pdf';
+import { promiseWithTimeout } from '../utils/promise-with-timeout';
 
-export async function insert(req: Request, res: Response): Promise<void> {
-  const cv = CV.fromRequest(req);
+export async function insertToElastic(cv: ICV): Promise<string> {
   const id = uuidv4();
   const header: IInsertDocumentHeader = {
     id,
     type: '_doc',
     index: CV_INDEX
   };
-  try {
-    const data = await elasticService.insert<ICV>(header, cv);
-    const buildResponse = (result: any) => {
-      return {
-        id: result?.body?._id
-      };
-    };
-    res.status(StatusCodes.OK).json({
-      message: 'CV inserted successfully',
-      data: buildResponse(data)
-    });
-  } catch (e) {
-    res.status(StatusCodes.BAD_REQUEST).json({
-      message: `Could not insert CV`,
-      data: e
-    });
+  const result = await elasticService.insert<ICV>(header, cv);
+  if (!result) {
+    return Promise.reject('Could not insert CV in elastic');
   }
+  return Promise.resolve(id);
 }
 
 export async function remove(req: Request, res: Response): Promise<void> {
@@ -112,54 +102,72 @@ export async function search(req: Request, res: Response): Promise<void> {
   }
 }
 
-export const create = async (req: Request, res: Response): Promise<void> => {
-  try {
-    if (!req.files) {
-      res.send({
-        status: false,
-        message: 'No file uploaded'
-      });
-    } else {
-      let data: { name: string; mimetype: string; mv: any }[] = [];
-      let cvs = req.files.cvs as UploadedFile[];
-      if (!Array.isArray(cvs)) {
-        cvs = [cvs];
-      }
-      cvs.forEach((cv) => {
-        const fileName = cv.name.replace(/\.[^/.]+$/, '');
-        switch (cv.mimetype) {
-          case 'application/pdf':
-            cv.mv('./assets/cv/pdf/' + cv.name);
-            pdfParser(
-              `./assets/cv/pdf/${fileName}.pdf`,
-              `./assets/json/pdf/${fileName}.json`
-            );
-            break;
-          case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-            'application/msword':
-            cv.mv('./assets/cv/docx/' + cv.name);
-            wordParser(
-              `./assets/cv/docx/${fileName}.docx`,
-              `./assets/cv/xml/${fileName}.xml`,
-              `./assets/json/docx/${fileName}.json`
-            );
-            break;
-        }
-        data.push({
-          name: cv.name,
-          mimetype: cv.mimetype,
-          mv: cv.mv
-        });
-      });
-
-      res.status(StatusCodes.OK).json({
-        message: 'Files are uploaded',
-        data: data
-      });
-    }
-  } catch (e: any) {
-    res.status(StatusCodes.BAD_REQUEST).json({
-      message: e.message
-    });
+export const create = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req?.files?.cvs) {
+    next(new Error('CV not supplied', StatusCodes.BAD_REQUEST));
+    return;
   }
+  try {
+    let cvs = req!.files!.cvs;
+    let createdCVS: ICV[];
+
+    if (!Array.isArray(cvs)) {
+      cvs = [cvs];
+    }
+
+    /** Extract text from file to CV Object **/
+    const fileToParse: Promise<ICV>[] = [];
+
+    for (const cv of cvs) {
+      const fileName = cv.name.replace(/\.[^/.]+$/, '');
+      switch (cv.mimetype) {
+        case FILETYPE.PDF:
+          fileToParse.push(handleFile(cv, fileName, 'pdf', pdfParser));
+          break;
+        case FILETYPE.DOCX_1 || FILETYPE.DOCX_2:
+          fileToParse.push(handleFile(cv, fileName, 'docx', wordParser));
+          break;
+      }
+    }
+    createdCVS = await Promise.all(fileToParse);
+
+    /** Insert CVs into elastic search **/
+    const inserts = createdCVS.map((cv: ICV) => insertToElastic(cv));
+    const inserted = await Promise.all(inserts);
+
+    res.status(StatusCodes.CREATED).json({
+      message: 'CVs inserted successfully',
+      data: inserted.map((i) => ({ id: i }))
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+const handleFile = async (
+  cv: UploadedFile,
+  fileName: string,
+  type: string,
+  // eslint-disable-next-line no-unused-vars
+  parser: (...arg: any) => Promise<string>
+): Promise<ICV> => {
+  await cv.mv(`./assets/cv/${type}/${cv.name}`);
+  const pathFile = `./assets/cv/${type}/${fileName}.${type}`;
+
+  const text: string = await promiseWithTimeout<string>(
+    parser(pathFile, fileName),
+    5000,
+    new Error(
+      `Parse file timeout with ${fileName}`,
+      StatusCodes.REQUEST_TIMEOUT
+    )
+  );
+
+  const newCV = new CV();
+  newCV.setData({ content: text, url: pathFile.slice(2) });
+  return Promise.resolve(newCV);
 };
