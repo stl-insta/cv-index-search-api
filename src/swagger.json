@@ -16,17 +16,17 @@
     "application/json"
   ],
   "paths": {
-    "/elatic/index": {
+    "/elastic/index": {
       "post": {
-        "summary": "Create elatic CV index",
+        "summary": "Create elastic field index",
         "tags": [
-          "Elaticsearch indexing queries"
+          "Elasticsearch indexing queries"
         ],
         "parameters": [
           {
             "name": "name",
             "in": "query",
-            "description": "The elatic target field",
+            "description": "The elastic target field",
             "required": true,
             "type": "string"
           }
@@ -35,7 +35,7 @@
           "200": {
             "description": "Index cvs created successfully",
             "schema": {
-              "$ref": "#/definitions/Elatic"
+              "$ref": "#/definitions/Elastic"
             }
           },
           "400": {
@@ -47,15 +47,15 @@
         }
       },
       "put": {
-        "summary": "Update elatic CV with given Name",
+        "summary": "Update elastic field with given name",
         "tags": [
-          "Elaticsearch indexing queries"
+          "Elasticsearch indexing queries"
         ],
         "parameters": [
           {
             "name": "name",
             "in": "query",
-            "description": "The elatic target field",
+            "description": "The elastic target field",
             "required": true,
             "type": "string"
           }
@@ -64,27 +64,27 @@
           "200": {
             "description": "Index cvs updated successfully",
             "schema": {
-              "$ref": "#/definitions/Elatic"
+              "$ref": "#/definitions/Elastic"
             }
           },
           "400": {
             "description": "Invalid"
           },
           "404": {
-            "description": "Failed. Elatic not found."
+            "description": "Failed. Elastic not found."
           }
         }
       },
       "delete": {
-        "summary": "Delete elatic CV with given name",
+        "summary": "Delete elastic field with given name",
         "tags": [
-          "Elaticsearch indexing queries"
+          "Elasticsearch indexing queries"
         ],
         "parameters": [
           {
             "name": "name",
             "in": "query",
-            "description": "The elatic target field",
+            "description": "The elastic target field",
             "required": true,
             "type": "string"
           }
@@ -93,14 +93,14 @@
           "200": {
             "description": "Index cvs deleted successfully",
             "schema": {
-              "$ref": "#/definitions/Elatic"
+              "$ref": "#/definitions/Elastic"
             }
           },
           "400": {
             "description": "Invalid"
           },
           "404": {
-            "description": "Failed. Elatic not found."
+            "description": "Failed. Elastic not found."
           }
         }
       }
@@ -202,7 +202,7 @@
     }
   },
   "definitions": {
-    "Elatic": {
+    "Elastic": {
       "type": "object",
       "properties": {
         "name": {
@@ -210,13 +210,13 @@
         }
       }
     },
-    "Elatics": {
+    "Elastics": {
       "type": "object",
       "properties": {
-        "elatics": {
+        "elastics": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/definitions/Elatic"
+            "$ref": "#/definitions/Elastic"
           }
         }
       }

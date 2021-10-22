@@ -55,6 +55,11 @@ To stop the services.
 $ docker-compose stop api
 ```
 
+## Swagger
+http://localhost:8000/swagger/#/
+
+## Postman
+
 ## Contributing
 
 Feel free to send pull requests.
