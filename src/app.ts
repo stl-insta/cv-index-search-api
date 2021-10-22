@@ -2,6 +2,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import express from 'express';
 import fileUpload from 'express-fileupload';
+import swaggerUi from 'swagger-ui-express';
+import * as swaggerDocument from './swagger.json';
 
 import routes from './routes';
 import logHandler from './resources/middlewares/logHandler';
@@ -23,10 +25,10 @@ app.use(transactionHandler);
 app.use(logHandler);
 app.use(express.json({ limit: '300kb' }));
 app.use(express.urlencoded({ extended: true }));
-
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // make the uploaded files publicly accessible from anywhere by making directory static
-// e.g. http://localhost:8000/cv/pdf/wlin.pdf
-app.use(express.static('assets'));
+// e.g. http://localhost:8000/assets/cv/pdf/wlin.pdf
+app.use('/assets', express.static('assets'));
 
 app.use('/', routes);
 

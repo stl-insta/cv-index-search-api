@@ -1,0 +1,266 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "cv-index-search-api",
+    "description": "An search engine on CV with ElasticSearch and TypeScript",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/elatic/index": {
+      "post": {
+        "summary": "Create elatic CV index",
+        "tags": [
+          "Elaticsearch indexing queries"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "The elatic target field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Index cvs created successfully",
+            "schema": {
+              "$ref": "#/definitions/Elatic"
+            }
+          },
+          "400": {
+            "description": "Invalid"
+          },
+          "404": {
+            "description": "Failed. Could not create index cvs."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update elatic CV with given Name",
+        "tags": [
+          "Elaticsearch indexing queries"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "The elatic target field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Index cvs updated successfully",
+            "schema": {
+              "$ref": "#/definitions/Elatic"
+            }
+          },
+          "400": {
+            "description": "Invalid"
+          },
+          "404": {
+            "description": "Failed. Elatic not found."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete elatic CV with given name",
+        "tags": [
+          "Elaticsearch indexing queries"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "The elatic target field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Index cvs deleted successfully",
+            "schema": {
+              "$ref": "#/definitions/Elatic"
+            }
+          },
+          "400": {
+            "description": "Invalid"
+          },
+          "404": {
+            "description": "Failed. Elatic not found."
+          }
+        }
+      }
+    },
+    "/cv": {
+      "post": {
+        "summary": "Upload CV file and insert to Elastic",
+        "tags": [
+          "CV queries"
+        ],
+        "requestBody": {
+          "description": "Upload CV",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/definitions/File"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Uploaded cv and created successfully",
+            "schema": {
+              "$ref": "#/definitions/CV"
+            }
+          },
+          "400": {
+            "description": "Invalid"
+          },
+          "404": {
+            "description": "Failed."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete CV with given id",
+        "tags": [
+          "CV queries"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Delete CV with ID",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CV deleted successfully",
+            "schema": {
+              "$ref": "#/definitions/id"
+            }
+          },
+          "400": {
+            "description": "Invalid"
+          },
+          "404": {
+            "description": "Failed. CV not found."
+          }
+        }
+      }
+    },
+    "/cv/search": {
+      "get": {
+        "summary": "Search with keywords",
+        "tags": [
+          "Search queries"
+        ],
+        "parameters": [
+          {
+            "name": "keywords",
+            "in": "query",
+            "description": "The keywords that needs to be fetched. Example=Java,Typescript.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Keywords research successfully",
+            "schema": {
+              "$ref": "#/definitions/CVs"
+            }
+          },
+          "400": {
+            "description": "Invalid"
+          },
+          "404": {
+            "description": "Failed. Not found."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Elatic": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Elatics": {
+      "type": "object",
+      "properties": {
+        "elatics": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Elatic"
+          }
+        }
+      }
+    },
+    "id": {
+      "properties": {
+        "uuid": {
+          "type": "string"
+        }
+      }
+    },
+    "CV": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "CVs": {
+      "type": "object",
+      "properties": {
+        "CVs": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/CV"
+          }
+        }
+      }
+    },
+    "File": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      }
+    }
+  }
+}
