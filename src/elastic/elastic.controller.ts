@@ -79,3 +79,26 @@ export async function update_index(req: Request, res: Response): Promise<void> {
     });
   }
 }
+export async function get_index(req: Request, res: Response): Promise<void> {
+  const { name: indexName } = url.parse(req.url, true).query;
+
+  if (!indexName) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      message: 'No index given'
+    });
+  }
+
+  try {
+    const result = await elasticService.getIndex(<string>indexName);
+
+    res.status(StatusCodes.OK).json({
+      message: `Index ${indexName} fetched successfully`,
+      data: result
+    });
+  } catch (e) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      message: `Could not get index ${indexName}`,
+      data: e
+    });
+  }
+}
