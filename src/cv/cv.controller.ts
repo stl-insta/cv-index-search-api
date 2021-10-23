@@ -100,6 +100,37 @@ export async function remove(req: Request, res: Response): Promise<void> {
   }
 }
 
+export async function list(_req: Request, res: Response): Promise<void> {
+  const header: ISearchDocumentHeader = {
+    index: CV_INDEX
+  };
+
+  try {
+    const result = await elasticService.searchByMatchAll(header);
+    const buildResponse = (response: any): ICV[] => {
+      return (<any[]>response?.body?.hits?.hits).map(
+        (hit: Record<string, any>) => {
+          return {
+            id: hit._id,
+            type: hit._type,
+            name: hit._source?.url
+              .replace(/^.*[\\/]/, '')
+              .replace(/\.[^/.]+$/, ''),
+            ...hit._source
+          };
+        }
+      );
+    };
+    res.status(StatusCodes.OK).json({
+      data: buildResponse(result)
+    });
+  } catch (e: any) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      message: e.message
+    });
+  }
+}
+
 export async function search(req: Request, res: Response): Promise<void> {
   const { keywords } = url.parse(req.url, true).query;
 

@@ -58,12 +58,16 @@ $ docker-compose stop api
 ### Swagger UI - REST API Documentation Tool
 http://localhost:8000/swagger/#/
 
-![image](https://user-images.githubusercontent.com/28400679/138511547-b6c6122e-6470-4096-bddb-8793668591a6.png)
+![image](https://user-images.githubusercontent.com/28400679/138573576-55565c36-181a-436e-9c01-7d69d5b9ed8d.png)
 
 ### Postman API platform
 We also use Postman to test easily our queries and we share our requests on Collections. 
 
-![image](https://user-images.githubusercontent.com/28400679/138511594-559667cf-98ae-4162-b979-2107dc089054.png)
+![image](https://user-images.githubusercontent.com/28400679/138573586-6195cfaa-204f-44ea-b5d7-194a26287ebd.png)
+
+## Kibana
+Go to Kibana dev tools console
+http://localhost:5601/app/dev_tools#/console
 
 ## Contributing
 
