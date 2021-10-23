@@ -1,6 +1,7 @@
 import { Client } from '@elastic/elasticsearch';
 import {
   IDeleteDocumentHeader,
+  IGetDocumentHeader,
   IIndexMapping,
   IInsertDocumentHeader,
   IQuery,
@@ -13,6 +14,12 @@ class ElasticService {
 
   public setClient(_client: Client) {
     this.client = _client;
+  }
+
+  public async getIndex(indexName: string) {
+    return this.client.indices.get({
+      index: indexName
+    });
   }
 
   public async createIndex(indexName: string) {
@@ -72,6 +79,12 @@ class ElasticService {
     return this.client.index({
       ...header,
       body: document
+    });
+  }
+
+  public async get(header: IGetDocumentHeader) {
+    return this.client.get({
+      ...header
     });
   }
 

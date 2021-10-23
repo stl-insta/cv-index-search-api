@@ -15,6 +15,11 @@ export interface IQuery {
   [key: string]: string[];
 }
 
+export interface IGetDocumentHeader {
+  id: string;
+  index: string;
+}
+
 export interface IInsertDocumentHeader {
   id: string;
   index: string;

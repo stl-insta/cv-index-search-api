@@ -6,6 +6,7 @@ import { elasticService } from '../elastic/elastic.service';
 import { CV_INDEX, ICV, IQueryCV } from './cv.interface';
 import {
   IDeleteDocumentHeader,
+  IGetDocumentHeader,
   IInsertDocumentHeader,
   ISearchDocumentHeader
 } from '../elastic/elastic.interface';
@@ -30,6 +31,42 @@ export async function insertToElastic(cv: ICV): Promise<string> {
     return Promise.reject('Could not insert CV in elastic');
   }
   return Promise.resolve(id);
+}
+
+export async function get(req: Request, res: Response): Promise<void> {
+  const { id } = url.parse(req.url, true).query;
+
+  if (!id) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      message: `No id given`
+    });
+  }
+  const header: IGetDocumentHeader = {
+    id: id as string,
+    index: CV_INDEX
+  };
+  try {
+    const data = await elasticService.get(header);
+    const buildResponse = (result: any) => {
+      return {
+        id: result?.body?._id,
+        type: result?.body?._type,
+        url: result?.body?._source?.url,
+        name: result?.body?._source?.url
+          .replace(/^.*[\\/]/, '')
+          .replace(/\.[^/.]+$/, '')
+      };
+    };
+    res.status(StatusCodes.OK).json({
+      message: 'CV fetched successfully',
+      data: buildResponse(data)
+    });
+  } catch (e) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      message: `Could not get CV`,
+      data: e
+    });
+  }
 }
 
 export async function remove(req: Request, res: Response): Promise<void> {
@@ -87,6 +124,11 @@ export async function search(req: Request, res: Response): Promise<void> {
         (hit: Record<string, any>) => {
           return {
             id: hit._id,
+            type: hit._type,
+            score: hit._score,
+            name: hit._source?.url
+              .replace(/^.*[\\/]/, '')
+              .replace(/\.[^/.]+$/, ''),
             ...hit._source
           };
         }
