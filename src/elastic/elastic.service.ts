@@ -75,6 +75,20 @@ class ElasticService {
     );
   }
 
+  public async searchByMatchAll(header: ISearchDocumentHeader) {
+    return this.client.search(
+      {
+        ...header,
+        body: {
+          query: { match_all: {} }
+        }
+      },
+      {
+        maxRetries: 3
+      }
+    );
+  }
+
   public async insert<T>(header: IInsertDocumentHeader, document: T) {
     return this.client.index({
       ...header,

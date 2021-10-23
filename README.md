@@ -65,6 +65,10 @@ We also use Postman to test easily our queries and we share our requests on Coll
 
 ![image](https://user-images.githubusercontent.com/28400679/138511594-559667cf-98ae-4162-b979-2107dc089054.png)
 
+## Kibana
+Go to Kibana dev tools console
+http://localhost:5601/app/dev_tools#/console
+
 ## Contributing
 
 Feel free to send pull requests.
