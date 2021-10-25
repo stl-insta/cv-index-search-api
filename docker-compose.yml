@@ -15,6 +15,25 @@ services:
     command: sh -c "npm install && npm start"
     networks:
       - elastic
+    depends_on:
+      - es01
+      - kib01
+      - logstash
+
+  api-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file: '.env.docker'
+    container_name: "api-dev"
+    volumes:
+      - "./:/source"
+    working_dir: /source
+    ports:
+      - "8000:8000"
+    command: sh -c "npm install && npm start"
+    networks:
+      - elastic
 
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
