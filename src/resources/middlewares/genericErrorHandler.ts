@@ -64,7 +64,7 @@ export default function genericErrorHandler(
 ): void {
   const error = buildError(err);
 
-  logger.log('error', 'Error: %s', err.stack || err.message);
+  logger.log('error', error.message, err.stack || err.message);
 
   res.status(error.code).json(error);
 }

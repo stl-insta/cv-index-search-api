@@ -1,10 +1,15 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { elasticService } from './elastic.service';
 import url from 'url';
 import { IIndexMapping } from './elastic.interface';
+import Error from '../resources/exceptions/Error';
 
-export async function delete_index(req: Request, res: Response): Promise<void> {
+export async function delete_index(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   const { name: indexName } = url.parse(req.url, true).query;
 
   if (!indexName) {
@@ -21,14 +26,19 @@ export async function delete_index(req: Request, res: Response): Promise<void> {
       data: result
     });
   } catch (e) {
-    res.status(StatusCodes.BAD_REQUEST).json({
-      message: `Could not delete index ${indexName}`,
-      data: e
-    });
+    const error = new Error(
+      `Could not delete index ${indexName}`,
+      StatusCodes.BAD_REQUEST
+    );
+    next(error);
   }
 }
 
-export async function create_index(req: Request, res: Response): Promise<void> {
+export async function create_index(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   const { name: indexName } = url.parse(req.url, true).query;
 
   if (!indexName) {
@@ -45,14 +55,19 @@ export async function create_index(req: Request, res: Response): Promise<void> {
       data: result
     });
   } catch (e) {
-    res.status(StatusCodes.BAD_REQUEST).json({
-      message: `Could not create index ${indexName}`,
-      data: e
-    });
+    const error = new Error(
+      `Could not create index ${indexName}`,
+      StatusCodes.BAD_REQUEST
+    );
+    next(error);
   }
 }
 
-export async function update_index(req: Request, res: Response): Promise<void> {
+export async function update_index(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   const { name: indexName } = url.parse(req.url, true).query;
   const mapping: IIndexMapping = req.body.mapping;
 
@@ -73,13 +88,19 @@ export async function update_index(req: Request, res: Response): Promise<void> {
       data: result
     });
   } catch (e) {
-    res.status(StatusCodes.BAD_REQUEST).json({
-      message: `Could not update index ${indexName}`,
-      data: e
-    });
+    const error = new Error(
+      `Could not update index ${indexName}`,
+      StatusCodes.BAD_REQUEST
+    );
+    next(error);
   }
 }
-export async function get_index(req: Request, res: Response): Promise<void> {
+
+export async function get_index(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   const { name: indexName } = url.parse(req.url, true).query;
 
   if (!indexName) {
@@ -96,9 +117,10 @@ export async function get_index(req: Request, res: Response): Promise<void> {
       data: result
     });
   } catch (e) {
-    res.status(StatusCodes.BAD_REQUEST).json({
-      message: `Could not get index ${indexName}`,
-      data: e
-    });
+    const error = new Error(
+      `Could not get index ${indexName}`,
+      StatusCodes.BAD_REQUEST
+    );
+    next(error);
   }
 }

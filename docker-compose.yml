@@ -15,6 +15,25 @@ services:
     command: sh -c "npm install && npm start"
     networks:
       - elastic
+    depends_on:
+      - es01
+      - kib01
+      - logstash
+
+  api-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file: '.env.docker'
+    container_name: "api-dev"
+    volumes:
+      - "./:/source"
+    working_dir: /source
+    ports:
+      - "8000:8000"
+    command: sh -c "npm install && npm start"
+    networks:
+      - elastic
 
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
@@ -43,6 +62,32 @@ services:
         http://es01:9200
         #  ELASTICSEARCH_URL: http://es01:9200
       #  ELASTICSEARCH_HOSTS: '["http://es01:9200","http://es02:9200"]'
+    networks:
+      - elastic
+    depends_on:
+      - es01
+
+  logstash:
+    build:
+      context: logstash/
+      args:
+        ELK_VERSION: 7.15.0
+    volumes:
+      - type: bind
+        source: ./logstash/config/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ./logstash/pipeline
+        target: /usr/share/logstash/pipeline
+        read_only: true
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
       - elastic
     depends_on:

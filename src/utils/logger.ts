@@ -4,6 +4,9 @@ import { createLogger, format, transports } from 'winston';
 
 import context from './context';
 import app from '../config/config';
+import ecsFormat from '@elastic/ecs-winston-format';
+import config from '../config/config';
+import { ElasticsearchTransport } from 'winston-elasticsearch';
 
 const { environment, logging } = app;
 const { combine, colorize, splat, printf, timestamp } = format;
@@ -33,17 +36,24 @@ if (!fs.existsSync(logging.dir)) {
   fs.mkdirSync(logging.dir);
 }
 
-let trans: any = [];
+/** Configure ES Transport for Logstash **/
+const esTransportOpts = {
+  level: logging.level,
+  clientOpts: { node: config.elastic.url }
+};
+
+let formatting: any = ecsFormat();
 
 if (environment === 'development') {
-  trans = [new transports.Console()];
+  formatting = combine(splat(), colorize(), timestamp(), formatter);
 }
 
 const logger = createLogger({
   level: logging.level,
-  format: combine(splat(), colorize(), timestamp(), formatter),
+  format: formatting,
   transports: [
-    ...trans,
+    new transports.Console(),
+    new ElasticsearchTransport(esTransportOpts),
     new DailyRotateFile({
       maxSize: logging.maxSize,
       maxFiles: logging.maxFiles,
