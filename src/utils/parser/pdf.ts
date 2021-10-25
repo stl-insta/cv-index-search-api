@@ -1,16 +1,11 @@
-import PdfParser from 'pdf2json';
+import { PdfTextExtractor } from './pdf-text-extractor';
 
-const pdfParser = async (path: string): Promise<string> => {
-  const parser = new PdfParser();
-  parser.loadPDF(path);
-  return new Promise((resolve, reject) => {
-    parser.on('pdfParser_dataError', (errData) => {
-      reject(errData);
-    });
-    parser.on('pdfParser_dataReady', (pdfData) => {
-      resolve(JSON.stringify(pdfData));
-    });
-  });
+const pdfParser = async (path: string, fileName: string): Promise<string> => {
+  const parser = new PdfTextExtractor();
+  const savePath = './assets/cv/img/';
+  parser.setFile(path, savePath, fileName);
+
+  return parser.extractText();
 };
 
 export default pdfParser;
