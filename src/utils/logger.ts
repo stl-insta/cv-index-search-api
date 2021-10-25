@@ -38,15 +38,13 @@ if (!fs.existsSync(logging.dir)) {
 
 /** Configure ES Transport for Logstash **/
 const esTransportOpts = {
-  level: 'error',
+  level: logging.level,
   clientOpts: { node: config.elastic.url }
 };
 
-let trans: any = [];
 let formatting: any = ecsFormat();
 
 if (environment === 'development') {
-  trans = [new transports.Console()];
   formatting = combine(splat(), colorize(), timestamp(), formatter);
 }
 
@@ -54,7 +52,7 @@ const logger = createLogger({
   level: logging.level,
   format: formatting,
   transports: [
-    ...trans,
+    new transports.Console(),
     new ElasticsearchTransport(esTransportOpts),
     new DailyRotateFile({
       maxSize: logging.maxSize,
