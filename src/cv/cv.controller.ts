@@ -233,7 +233,7 @@ const handleFile = async (
 
   const text: string = await promiseWithTimeout<string>(
     parser(pathFile, fileName),
-    5000,
+    10000,
     new Error(
       `Parse file timeout with ${fileName}`,
       StatusCodes.REQUEST_TIMEOUT
