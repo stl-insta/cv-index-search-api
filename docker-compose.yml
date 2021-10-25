@@ -18,22 +18,7 @@ services:
     depends_on:
       - es01
       - kib01
-      - logstash
-
-  api-dev:
-    build:
-      context: .
-      dockerfile: Dockerfile.api
-    env_file: '.env.docker'
-    container_name: "api-dev"
-    volumes:
-      - "./:/source"
-    working_dir: /source
-    ports:
-      - "8000:8000"
-    command: sh -c "npm install && npm start"
-    networks:
-      - elastic
+      - log01
 
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
@@ -48,7 +33,7 @@ services:
     volumes:
       - data01:/usr/share/elasticsearch/data
     ports:
-      - 9200:9200
+      - "9200:9200"
     networks:
       - elastic
 
@@ -56,7 +41,7 @@ services:
     image: docker.elastic.co/kibana/kibana:7.15.0
     container_name: kib01
     ports:
-      - 5601:5601
+      - "5601:5601"
     environment:
       ELASTICSEARCH_HOSTS:
         http://es01:9200
@@ -67,11 +52,9 @@ services:
     depends_on:
       - es01
 
-  logstash:
-    build:
-      context: logstash/
-      args:
-        ELK_VERSION: 7.15.0
+  log01:
+    image: docker.elastic.co/logstash/logstash:7.15.0
+    container_name: log01
     volumes:
       - type: bind
         source: ./logstash/config/logstash.yml
