@@ -19,17 +19,7 @@ $ cd <application-name>
 $ cp .env.example .env
 ```
 
-Start the application.
-
-```bash
-$ npm install
-
-$ npm start # For production
-
-$ npm start dev # For development
-```
-
-**Using Docker**
+** Start the application using Docker**
 
 Make a copy of `.env.docker` and save as `.env`.
 
@@ -37,10 +27,21 @@ Make a copy of `.env.docker` and save as `.env`.
 $ cp .env.docker .env
 ```
 
-Install dependencies and run the application locally.
+Install dependencies
+```bash
+$ npm install
+```
+
+Run the application locally.
 
 ```bash
 $ docker-compose up -d api
+```
+
+Seed some fake data, **works only while docker and the app is running**
+
+```bash
+$ npm run migrate
 ```
 
 View logs of the container.

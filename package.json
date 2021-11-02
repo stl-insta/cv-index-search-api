@@ -15,7 +15,8 @@
     "test": "NODE_ENV=test yarn migrate && NODE_ENV=test jest --forceExit --detectOpenHandles --maxWorkers=1 --verbose",
     "lint": "eslint . --ext .ts,.json",
     "lint:fix": "eslint --fix . --ext .ts,.json",
-    "prettify": "prettier 'src/**/*.ts' --write"
+    "prettify": "prettier 'src/**/*.ts' --write",
+    "migrate": "ts-node scripts/migrate.ts"
   },
   "private": true,
   "license": "MIT",
@@ -37,6 +38,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
+    "form-data": "^4.0.0",
     "helmet": "^4.6.0",
     "http-status-codes": "^2.1.4",
     "joi": "^17.4.2",
@@ -73,6 +75,7 @@
     "@types/xml2js": "^0.4.9",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
+    "axios": "^0.23.0",
     "babel-jest": "^27.0.6",
     "eslint": "^7.31.0",
     "eslint-config-prettier": "^8.3.0",
