@@ -1,0 +1,8 @@
+FROM node:14
+RUN git clone https://github.com/stl-insta/cv-app.git
+WORKDIR /cv-app
+RUN npm install -g http-server
+RUN npm install
+RUN npm run build
+EXPOSE 8080
+CMD tail -f /dev/null

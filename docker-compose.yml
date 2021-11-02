@@ -79,6 +79,20 @@ services:
       - es01
     restart: unless-stopped
 
+  cv-app:
+    build:
+      context: front
+      dockerfile: Dockerfile
+    container_name: "cv-app"
+    ports:
+      - "8080:8080"
+    command: sh -c "http-server dist"
+    networks:
+      - elastic
+    depends_on:
+      - api
+    restart: unless-stopped
+
 volumes:
   data01:
     driver: local
