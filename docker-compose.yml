@@ -1,9 +1,23 @@
 version: "3"
 
 services:
+  cv-app:
+    build:
+      context: dockerfiles
+      dockerfile: Dockerfile.front
+    container_name: "cv-app"
+    ports:
+      - "8080:8080"
+    command: sh -c "http-server dist"
+    networks:
+      - elastic
+    depends_on:
+      - api
+    restart: unless-stopped
+
   api:
     build:
-      context: .
+      context: dockerfiles
       dockerfile: Dockerfile.api
     env_file: '.env.docker'
     container_name: "api"
@@ -46,8 +60,6 @@ services:
     environment:
       ELASTICSEARCH_HOSTS:
         http://es01:9200
-        #  ELASTICSEARCH_URL: http://es01:9200
-      #  ELASTICSEARCH_HOSTS: '["http://es01:9200","http://es02:9200"]'
     networks:
       - elastic
     depends_on:
@@ -77,20 +89,6 @@ services:
       - elastic
     depends_on:
       - es01
-    restart: unless-stopped
-
-  cv-app:
-    build:
-      context: front
-      dockerfile: Dockerfile
-    container_name: "cv-app"
-    ports:
-      - "8080:8080"
-    command: sh -c "http-server dist"
-    networks:
-      - elastic
-    depends_on:
-      - api
     restart: unless-stopped
 
 volumes:
