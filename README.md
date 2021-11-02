@@ -38,7 +38,7 @@ Run the application locally.
 $ docker-compose up -d api
 ```
 
-Seed some fake data, works only while docker is running
+Seed some fake data, **works only while docker and the app is running**
 
 ```bash
 $ npm run migrate
