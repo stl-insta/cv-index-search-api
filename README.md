@@ -74,6 +74,14 @@ http://localhost:5601/app/dev_tools#/console
 We use Tesseract OCR to read PDF files content.  
 We use DOCX2XML to read docx files content.  
 
+## Tests
+Some unit testing has been implemented.  
+The migration script acts as an end-2-end integration testing.  
+Please **make sure** the app is running inside a docker container before launching the test. 
+```bash
+$ npm run test
+```
+
 ## Contributing
 
 Feel free to send pull requests.
