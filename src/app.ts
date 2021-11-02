@@ -17,7 +17,7 @@ app.use(
   fileUpload({
     createParentPath: true,
     safeFileNames: true,
-    preserveExtension: true
+    preserveExtension: 4 // extensions of length 4 maximum
   })
 );
 
