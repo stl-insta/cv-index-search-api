@@ -15,7 +15,9 @@ const app: express.Application = express();
 
 app.use(
   fileUpload({
-    createParentPath: true
+    createParentPath: true,
+    safeFileNames: true,
+    preserveExtension: true
   })
 );
 
