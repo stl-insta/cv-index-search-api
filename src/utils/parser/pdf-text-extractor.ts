@@ -37,7 +37,7 @@ export class PdfTextExtractor implements IPdfTextExtractor {
       this.savePath,
       this.saveFilename
     );
-    if (!images) {
+    if (images.length <= 0) {
       return Promise.reject('Could not convert PDF to IMG');
     }
 
@@ -47,8 +47,8 @@ export class PdfTextExtractor implements IPdfTextExtractor {
       extractors.push(PdfTextExtractor.imgToText(path))
     );
     const results: string[] = await Promise.all(extractors);
-    if (!results) {
-      return Promise.reject('Could not extract text from IMG');
+    if (results.length <= 0) {
+      return Promise.reject('Could not extract text from images');
     }
     const text = results.join();
 
@@ -83,11 +83,11 @@ export class PdfTextExtractor implements IPdfTextExtractor {
 
     const { bulk } = fromPath(filePath, pdf2ImgOption);
     if (!bulk) {
-      return Promise.reject('Could not convert PDF to IMG');
+      return Promise.reject('Could not initialize bulk image from path');
     }
     const img: WriteImageResponse[] = await bulk(-1, false);
-    if (!img) {
-      return Promise.reject('Could not convert PDF to IMG');
+    if (img.length <= 0) {
+      return Promise.reject('Bulk image extraction failed');
     }
     return Promise.resolve(<string[]>img.map((i) => i.path));
   }
