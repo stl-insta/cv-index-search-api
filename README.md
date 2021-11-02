@@ -70,6 +70,10 @@ We also use Postman to test easily our queries and we share our requests on Coll
 Go to Kibana dev tools console
 http://localhost:5601/app/dev_tools#/console
 
+## File parsing  
+We use Tesseract OCR to read PDF files content.  
+We use DOCX2XML to read docx files content.  
+
 ## Contributing
 
 Feel free to send pull requests.
