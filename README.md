@@ -35,7 +35,13 @@ $ npm install
 Run the application locally.
 
 ```bash
-$ docker-compose up -d cv-app
+$ docker-compose up api
+```
+
+When the api started successfully and displays server info. Run the frontend app in another console
+
+```bash
+$ docker-compose up cv-app
 ```
 
 Seed some fake data, **works only while docker and the app is running**
@@ -54,6 +60,7 @@ To stop the services.
 
 ```bash
 $ docker-compose stop cv-app
+$ docker-compose stop api
 ```
 ## REST API
 ### Swagger UI - REST API Documentation Tool
