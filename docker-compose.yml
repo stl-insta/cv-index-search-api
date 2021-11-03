@@ -19,7 +19,7 @@ services:
     build:
       context: dockerfiles
       dockerfile: Dockerfile.api
-    env_file: '.env.docker'
+    env_file: '.env'
     container_name: "api"
     volumes:
       - "./:/source"
