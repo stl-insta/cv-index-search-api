@@ -3,8 +3,8 @@ version: "3.2"
 services:
   cv-app:
     build:
-      context: dockerfiles
-      dockerfile: Dockerfile.front
+      context: .
+      dockerfile: dockerfiles/Dockerfile.front
     container_name: "cv-app"
     ports:
       - "8080:8080"
