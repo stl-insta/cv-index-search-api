@@ -21,12 +21,6 @@ $ cp .env.example .env
 
 ** Start the application using Docker**
 
-Make a copy of `.env.docker` and save as `.env`.
-
-```bash
-$ cp .env.docker .env
-```
-
 Install dependencies
 ```bash
 $ npm install
