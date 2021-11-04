@@ -2,8 +2,6 @@ import app from './app';
 import logger from './utils/logger';
 import config from './config/config';
 import nodeErrorHandler from './resources/middlewares/nodeErrorHandler';
-// import pdfParser from './utils/parser/pdf';
-// import wordParser from './utils/parser/docx';
 
 const { port } = config;
 
