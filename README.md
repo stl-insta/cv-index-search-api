@@ -116,10 +116,13 @@ We use [docx4js](https://github.com/lalalic/docx4js) and [xml2js](https://github
 
 ## User Interfaces
 Home Page:
+![image](https://user-images.githubusercontent.com/28400679/140531748-2920b9ee-2fd8-423a-9eaf-9e78be07de38.png)
 
 File Upload Page:
+![image](https://user-images.githubusercontent.com/28400679/140531819-607ce2bb-eb57-420b-959c-318188be025c.png)
 
 Search Page:
+![image](https://user-images.githubusercontent.com/28400679/140531975-cdb3f294-e352-44fa-b284-c16f1b163429.png)
 
 ## Contributing
 Feel free to send pull requests.
