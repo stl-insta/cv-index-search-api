@@ -1,4 +1,4 @@
-CV Indexing (PDF & Word) and searching in Typescript with Elasticsearch.
+CV Indexing (PDF & Word) and searching made with Typescript using ELK Stack, NodeJS, VueJS.
 
 * [Introduction](#introduction)
     * [Quick Links](#quick-Links)
@@ -19,13 +19,15 @@ CV Indexing (PDF & Word) and searching in Typescript with Elasticsearch.
 * [License](#license)
 ## Introduction
 
-Cv app is a cv search engine platform, helping HR to find quickly the perfect candidate by upload candidate CVs in different formats such as PDF or WORD.
+Cv app is a cv search engine platform, helping HR to find quickly the perfect candidate by searching with simple or multiple keywords.
+CVs can be uploaded with different formats such as PDF or DOCX.
+When uploaded, they are parsed and indexed in Elastic search db.
 
-DAAR Project 2: searching distributed data with ElasticSearch.
+**DAAR Project 2:** Searching distributed data with ElasticSearch.
 
-Binome : [Mamy Razafintsialonina Ny Andrianina](https://github.com/nyandrianinamamy) & [Willyan LIN](https://github.com/willdow)
+Binome : [Mamy Razafintsialonina](https://github.com/nyandrianinamamy) & [Willyan LIN](https://github.com/willdow)
 ### Quick Links
-Some shortcuts
+Some shortcuts to open when the app is running locally on your machine
 - [Swagger](http://localhost:8000/swagger/#/) (Test request)
 - [Kibana](http://localhost:5601/app/dev_tools#/console) (Dev tools console)
 - [App](http://localhost:8080/) (Front-end application)
@@ -37,6 +39,9 @@ Some shortcuts
 - [Docker](https://docs.docker.com/install/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 
+**Make sure to set at least 4gb of memory in docker settings** 
+Otherwise some containers might crash.
+
 ### Run
 
 Clone the repository, install the dependencies.
@@ -47,7 +52,7 @@ $ cd <application-name>
 $ cp .env.example .env
 ```
 
-** Start the application using Docker**
+**Start the application using Docker**
 
 Install dependencies
 ```bash
@@ -96,7 +101,7 @@ $ docker-compose logs -f
 
 ### Tests
 Some unit testing has been implemented.  
-The migration script acts as an end-2-end integration testing.  
+The migration script acts as an **end-2-end integration test**.  
 Please **make sure** the app is running inside a docker container before launching the test. 
 ```bash
 $ npm run test
@@ -112,7 +117,7 @@ We also use Postman to test easily our queries and we share our requests on Coll
 ![image](https://user-images.githubusercontent.com/28400679/138573586-6195cfaa-204f-44ea-b5d7-194a26287ebd.png)
 
 ### File parsing  
-We use [tesseract OCR ](https://github.com/tesseract-ocr/tesseract) to read PDF files content.  
+We use [tesseract OCR](https://github.com/tesseract-ocr/tesseract) to read PDF files content.  
 We use [docx4js](https://github.com/lalalic/docx4js) and [xml2js](https://github.com/Leonidas-from-XIV/node-xml2js) to read docx files content.  
 
 ## User Interfaces
@@ -125,8 +130,8 @@ File Upload Page:
 Search Page:
 ![image](https://user-images.githubusercontent.com/28400679/140531975-cdb3f294-e352-44fa-b284-c16f1b163429.png)
 
-## To do
-If we have more time, maybe it's great to have some feature :
+## Future works
+It would be great to have those features in the near future:
 
 API:
 - filter
@@ -139,6 +144,7 @@ Front:
 
 ## Contributing
 Feel free to send pull requests.
+Feel free to donate hugs and kisses.
 
 ## License
 
