@@ -14,6 +14,7 @@ CV Indexing (PDF & Word) and searching in Typescript with Elasticsearch.
     * [Postman](#postman-api-platform)
     * [File parsing](#file-parsing)
 * [User Interfaces](#user-interfaces)
+* [To do](#to-do)
 * [Contributing](#contributing)
 * [License](#license)
 ## Introduction
@@ -123,6 +124,18 @@ File Upload Page:
 
 Search Page:
 ![image](https://user-images.githubusercontent.com/28400679/140531975-cdb3f294-e352-44fa-b284-c16f1b163429.png)
+
+## To do
+If we have more time, maybe it's great to have some feature :
+
+API:
+- filter
+- stats (popular language, skills, average)
+
+Front:
+- pagination 
+- loader
+- sort
 
 ## Contributing
 Feel free to send pull requests.
