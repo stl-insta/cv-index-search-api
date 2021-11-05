@@ -6,12 +6,12 @@ CV Indexing (PDF & Word) and searching in Typescript with Elasticsearch.
     * [Requirements](#requirements)
     * [Run](#run)
     * [Seed Data](#seed-data)
+    * [Kibana](#kibana)
     * [Logs](#logs)
     * [Tests](#tests)
 * [Tools](#tools)
     * [Swagger](#swagger)
     * [Postman](#postman-api-platform)
-    * [Kibana](#kibana)
     * [File parsing](#file-parsing)
 * [User Interfaces](#user-interfaces)
 * [Contributing](#contributing)
@@ -78,6 +78,13 @@ Seed some fake data, **works only while docker and the app is running**
 ```bash
 $ npm run migrate
 ```
+### Kibana
+
+Kibana is a free and open user interface that let us visualize Elasticsearch data and navigate the Elastic Stack.
+
+```bash
+$ docker-compose up kib01
+```
 ### Logs
 
 View logs of the container.
@@ -102,9 +109,6 @@ We use Swagger UI to documente our REST API
 We also use Postman to test easily our queries and we share our requests on Collections. 
 
 ![image](https://user-images.githubusercontent.com/28400679/138573586-6195cfaa-204f-44ea-b5d7-194a26287ebd.png)
-
-### Kibana
-Kibana is a free and open user interface that let us visualize Elasticsearch data and navigate the Elastic Stack.
 
 ### File parsing  
 We use [tesseract OCR ](https://github.com/tesseract-ocr/tesseract) to read PDF files content.  
